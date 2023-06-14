@@ -14,7 +14,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-def optimize_threshold(df, subjects_info, min_timepoints=505, min_controls=20, min_patients=20):
+def optimize_threshold(df, subjects_info, min_timepoints=505, min_controls=20, min_patients=20, percentage=0.1):
     # Create a copy of the dataframe
     df_copy = df.copy()
     
@@ -28,7 +28,8 @@ def optimize_threshold(df, subjects_info, min_timepoints=505, min_controls=20, m
     # Iterate over a range of thresholds
     for thr in np.linspace(min_val, max_val, 16):  # 100 is the number of steps, it can be adjusted
         # Discard rows where any subject's rating is above the threshold
-        df_copy = df.where(df <= thr).dropna()
+        #df_copy = df.where(df <= thr).dropna() #This is a harsh scrub
+        df_copy = df.where((df > thr).mean(axis=1) <= percentage).dropna() #this scrub is per percentage
         
         # Get the remaining subjects
         remaining_subjects = df_copy.columns
@@ -43,6 +44,7 @@ def optimize_threshold(df, subjects_info, min_timepoints=505, min_controls=20, m
             # If conditions are met, update the optimal threshold and subjects
             optimal_thr = thr
             optimal_subjects = remaining_subjects
+            break
 
     # If no optimal solution was found, print an error message
     if optimal_thr is None:
@@ -78,7 +80,8 @@ df2= df.copy()
 
 # Iterate until an optimal solution is found or the list of subjects is empty
 while sorted_subjects:
-    result = optimize_threshold(df2, subjects_info)
+    result = optimize_threshold(df2, subjects_info, min_timepoints=505, 
+                                min_controls=20, min_patients=20, percentage=0.15)
     
     if result is not None:
         optimal_thr, optimal_subjects = result
@@ -102,8 +105,9 @@ cmap = sns.color_palette("Greys", as_cmap=True)
 cmap.set_bad(color='red')
 
 df_plot = df[optimal_subjects]
-df_plot = df_plot.where(df_plot <= optimal_thr)
-df_plot.loc[df_plot.isnull().any(axis=1),:] = np.nan
+#df_plot = df_plot.where(df_plot <= optimal_thr) # For hard scrub
+#df_plot.loc[df_plot.isnull().any(axis=1),:] = np.nan # For hard scrub
+df_plot = df_plot.where((df_plot > optimal_thr).mean(axis=1) <= 0.15) #adjust the percent accordingly
 
 
 fig, axs = plt.subplots(1,1,figsize=(10, 10))
