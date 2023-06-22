@@ -18,7 +18,7 @@ from sklearn.linear_model import LinearRegression
 
 nii_path = '/m/cs/scratch/networks-pm/epeli/data/organized_videos/'
 ts_path = '/m/cs/scratch/networks-pm/epeli/data/group_masks'
-atlas_name = 'brainnetome-child'
+atlas_name = 'seitzman-set1' #'haskins' #'brainnetome-child'
 vol_size = [91,109,91]
 ###############################################################################
 
@@ -56,6 +56,10 @@ if not os.path.exists(group_mask_mult_name) or not os.path.exists(group_mask_sum
 #Multiply the group mask by the atlas
 if atlas_name=='brainnetome-child':
     atlas = '/m/cs/scratch/networks-pm/atlas/Brainnetome/BrainnetomeChild/CHILD_ATLAS_224.nii.gz'
+elif atlas_name=='haskins':
+    atlas = '/m/cs/scratch/networks-pm/atlas/HaskinsPediatric/Haskins2mm.nii'
+elif atlas_name=='seitzman-set1':
+    atlas = '/m/cs/scratch/networks-pm/atlas/300_ROI_Set/seitzman_set1.nii'
 else:
     print('no atlas defined!')
     
