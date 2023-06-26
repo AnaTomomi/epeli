@@ -4,6 +4,7 @@
 Created on Tue May  2 17:32:22 2023
 
 @author: merzonl1
+@modified: trianaa1
 
 The script cut and merge video data for Roosa.
 It save 4 videos separately + one merged file
@@ -18,6 +19,7 @@ import math
 path_denoised = '/m/nbe/scratch/fmri_epeli/brain_data/experiment/derivatives/denoise_new'
 path_bids = '/m/nbe/scratch/fmri_epeli/brain_data/experiment/bids'
 path_fmriprep ="/m/nbe/scratch/fmri_epeli/brain_data/experiment/derivatives/fmriprep"
+savepath = '/m/cs/scratch/networks-pm/epeli/data/organized_videos'
 
 tr = 0.594
 
@@ -28,7 +30,6 @@ ban_list = ['denoise_new', '__pycache__',  '.bidsignore', "scripts_for_denoising
 #ban_list =['sub-F136', 'sub-F27']
 sub_list = [x for x in sub_list if x not in ban_list]
 sub_list.sort()
-sub_list =['sub-F28', 'sub-F104', 'sub-F117', 'sub-F118', 'sub-F121', 'sub-F122', 'sub-F123', 'sub-F124']
 
 
 ############### videos ###################
@@ -63,12 +64,12 @@ for sub in sub_list:
         continue  
 
     #check if the participant has already been processed
-    if os.path.exists(f'{path_denoised}_smoothing/{sub}/'):
+    if os.path.exists(f'{savepath}/{sub}/'):
         print(sub, "skipped")
         continue
     
-    if not os.path.exists(f'{path_denoised}_smoothing/{sub}/'):    
-        os.mkdir(f'{path_denoised}_smoothing/{sub}')
+    if not os.path.exists(f'{savepath}/{sub}/'):    
+        os.mkdir(f'{savepath}/{sub}')
     
     img = nibabel.load(file_fmri)
     timing = pd.read_csv(file_timing, sep ='\t')
@@ -100,13 +101,13 @@ for sub in sub_list:
         cut_img = img.slicer[:,:,:,start_idx:end_idx]
         
         # save new nifti file
-        path_save = f'{path_denoised}_smoothing/{sub}/{sub}_task-{v}-{suf}.nii'
+        path_save = f'{savepath}/{sub}/{sub}_task-{v}-{suf}.nii'
         nibabel.save(cut_img, path_save)
         
     data = data[..., indexes_for_all_videos]
     cut_img = img.__class__(data, affine=img.affine, header=img.header, extra=img.extra)
     
-    path_save = f'{path_denoised}_smoothing/{sub}/{sub}_task-mergedvideo-{suf}.nii'
+    path_save = f'{savepath}/{sub}/{sub}_task-mergedvideo-{suf}.nii'
     nibabel.save(cut_img, path_save)
     
     print(sub, "done")

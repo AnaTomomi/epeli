@@ -79,7 +79,7 @@ for sub in sub_list:
             indexes_for_all_videos = indexes_for_all_videos + all_idx[start_idx:end_idx]
     
             #cut out one video
-            cut_fd = fd.loc[start_idx:end_idx]
+            cut_fd = fd.loc[start_idx:end_idx-1]# end_idx-1 to account for the loss of one volume in Liya's cut videos
             all_cuts.append(cut_fd)
     
         # merge all cut fd in the right order and save
