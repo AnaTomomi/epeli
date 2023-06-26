@@ -98,6 +98,10 @@ while sorted_subjects:
 if not sorted_subjects:
     print("No optimal solution found after removing all subjects.")
 
+with open(f'/m/cs/scratch/networks-pm/epeli/subject_scrub_fd{str(optimal_threshold)}.txt', 'w') as f:
+    for line in sub_list:
+        f.write(f"{line}\n")
+
 ########################### Visualize optimal solution ########################
 
 # Plot for each participant to check the quality

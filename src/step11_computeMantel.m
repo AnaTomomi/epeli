@@ -11,8 +11,9 @@ clc
 addpath(genpath('/m/cs/scratch/networks-pm/epeli/ISCstats'));
 
 %Load the data 
-atlas = 'seitzman';
-data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc/all_%s.mat',atlas));
+atlas = 'haskins';
+folder = 'isc_31TC_26ADHD';
+data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/%s/all_%s.mat',folder, atlas));
 G1_all = data.data;
 
 %Define the parameters
@@ -21,8 +22,8 @@ n_per = 5000;
 NG1 = size(G1_all,2);
 
 %Make the behavioral ISC
-behav = xlsread(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc/behavioral_%s.xlsx',atlas));
-behdata = corr(behav);
+behav = xlsread(sprintf('/m/cs/scratch/networks-pm/epeli/data/%s/behavioral_%s.xlsx',folder,atlas));
+behdata = 1-squareform(pdist(behav, 'euclidean'));
 
 % loop over the different ROIs
 results = zeros(n_rois,2);
@@ -35,7 +36,7 @@ for i=1:n_rois
     disp(i)
 end
 
-save(sprintf('/m/cs/scratch/networks-pm/epeli/results/isc/mantel_%s.mat',atlas),'results')
+save(sprintf('/m/cs/scratch/networks-pm/epeli/results/%s/mantel_%s.mat',folder,atlas),'results')
 
 %Correct for multiple comparisons
 q = mafdr(results(:,2),'BHFDR','true');

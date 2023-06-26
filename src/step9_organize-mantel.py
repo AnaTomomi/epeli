@@ -34,10 +34,18 @@ def organize_data(files):
 #Load the data
 ts_path = '/m/cs/scratch/networks-pm/epeli/data/timeseries'
 save_path = '/m/cs/scratch/networks-pm/epeli/data/isc'
-atlas = 'seitzman'
+atlas = 'brainnetome'
 files = sorted(glob.glob(ts_path + f'/**/*{atlas}*.csv', recursive=True))
-n_rois = 300
 n_tr = 870
+
+if atlas=='brainnetome':
+    n_rois = 224
+elif atlas=='haskins':
+    n_rois = 106
+elif atlas=='seitzman':
+    n_rois = 300
+else:
+    print('Atlas not included')
 
 #exclude subjects
 banned_list = ['sub-F106']
@@ -59,7 +67,7 @@ beh_data.set_index('Participant', inplace=True)
 beh_data = beh_data.reindex(participants_order)
 beh_data.to_excel(f'{save_path}/behavioral_{atlas}.xlsx')
 
-#Print the subject list
+'''#Print the subject list
 sub_list = []
 for file in files:
     head, tail = os.path.split(file)
@@ -68,4 +76,4 @@ for file in files:
 
 with open(f'{save_path}/subject_list.txt', 'w') as f:
     for line in sub_list:
-        f.write(f"{line}\n")
+        f.write(f"{line}\n")'''

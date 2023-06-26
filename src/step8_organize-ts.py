@@ -31,12 +31,13 @@ def organize_data(files):
     return data
 
 #Load the data
-ts_path = '/m/cs/scratch/networks-pm/epeli/data/timeseries'
-save_path = '/m/cs/scratch/networks-pm/epeli/data/isc'
-atlas = 'seitzman'
-files = sorted(glob.glob(ts_path + f'/**/*{atlas}*.csv', recursive=True))
-n_rois = 300
-n_tr = 870
+ts_path = '/m/cs/scratch/networks-pm/epeli/data/scrubbed_timeseries_10'
+save_path = '/m/cs/scratch/networks-pm/epeli/data/isc_scrubbed_10'
+atlas = 'haskins'
+smoothing = '6mm'
+files = sorted(glob.glob(ts_path + f'/**/*{smoothing}*{atlas}*.csv', recursive=True))
+n_rois = 106
+n_tr = 664
 
 #Split the data in groups
 controls = [file for file in files if 'sub-F' in file and len(file.split('sub-F')[1].split('_')[0]) == 2]
@@ -44,11 +45,11 @@ adhd = [file for file in files if 'sub-F' in file and len(file.split('sub-F')[1]
 
 data = organize_data(controls)
 data_dict = {"data": data, "label": "controls"}
-savemat(f'{save_path}/tc_{atlas}.mat', data_dict)        
+savemat(f'{save_path}/tc_{smoothing}_{atlas}.mat', data_dict)        
 
 data = organize_data(adhd)
 data_dict = {"data": data, "label": "adhd"}
-savemat(f'{save_path}/adhd_{atlas}.mat', data_dict)   
+savemat(f'{save_path}/adhd_{smoothing}_{atlas}.mat', data_dict)   
 
 
 #Print the subject list
@@ -58,6 +59,6 @@ for file in files:
     subject = tail.split("_")[0]
     sub_list.append(subject)
 
-with open('/m/cs/scratch/networks-pm/epeli/results/isc/subject_list.txt', 'w') as f:
+with open('/m/cs/scratch/networks-pm/epeli/data/isc_no-scrub/subject_list.txt', 'w') as f:
     for line in sub_list:
         f.write(f"{line}\n")

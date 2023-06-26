@@ -11,10 +11,11 @@ clc
 addpath(genpath('/m/cs/scratch/networks-pm/epeli/ISCstats'));
 
 %Load the data 
-atlas = 'seitzman';
-data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc/tc_%s.mat',atlas));
+atlas = 'brainnetome-child';
+smoothing = '6mm';
+data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc_scrubbed_10/tc_%s_%s.mat',smoothing,atlas));
 G1_all = data.data;
-data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc/adhd_%s.mat',atlas));
+data = load(sprintf('/m/cs/scratch/networks-pm/epeli/data/isc_scrubbed_10/adhd_%s_%s.mat',smoothing,atlas));
 G2_all = data.data;
 
 %Define the parameters
@@ -35,7 +36,7 @@ for i=1:n_rois
     disp(i)
 end
 
-save(sprintf('/m/cs/scratch/networks-pm/epeli/results/isc/gc_%s.mat',atlas),'results')
+save(sprintf('/m/cs/scratch/networks-pm/epeli/results/isc/gc_%s_%s.mat',smoothing,atlas),'results')
 
 %Correct for multiple comparisons
 q = mafdr(results(:,2),'BHFDR','true');
